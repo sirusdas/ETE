@@ -1,0 +1,14 @@
+/**
+ * @sirus
+ */
+
+update device info
+http://localhost/Email_tracking_engine/?mode=tracker&id=1&mail=abc@gmail.com&camp_id=1
+
+//update links
+http://localhost/Email_tracking_engine/?mode=tracker&id=1&link=http://google.com
+//with ecoding
+localhost/Email_tracking_engine/?mode=track&id=Mg,,&link=YWJjQGdtYWlsLmNvbQ,,
+
+//get json output
+http://localhost/Email_tracking_engine/?mode=tracker

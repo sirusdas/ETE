@@ -1,0 +1,12 @@
+<?php
+define('APP_PATH','/media/suresh/Worskspace/Sirus/EclipsePhpWorkspace/Email_tracking_engine');
+define('CLASS_PATH',APP_PATH.'/classes');
+define('CAMPAIGN_CLASS_PATH',APP_PATH.'/classes/campaign');
+define('TRACKER_CLASS_PATH',APP_PATH.'/classes/tracker');
+define('LIB_PATH',APP_PATH.'/lib');
+define('DB_USER_MYSQL','root');
+define('DB_PASSWORD_MYSQL','');
+define('DB_NAME_MYSQL','email_tracker');
+define('DB_HOST_MYSQL','localhost');
+define('DEFAULT_URL','http://localhost/Email_tracking_engine/');
+?>
