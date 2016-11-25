@@ -94,14 +94,23 @@ public $result='';
 	}
 
 //this is used to get all the contents from the db and send a json response
-	public function trackGetAll(){
+/* 	public function trackGetAll(){
 		if($_POST){
-			$flag = 0;
-			//echo $details->country.$details->region.$details->city; // city
-			if($flag == 0){
 				$dbObj = new Data();
 				$result = $dbObj->retrive_client_details();
-			}
+				echo json_encode( $result );
+		}// if ends
+		else{
+			$common = new Common();
+			$common->senderror(500,"Who knows what... it was not a post request Folks??? :D");
+			//echo "Who knows what... it was not a post request Folks??? :D";
+		}
+	} */
+	
+	public function trackByPara($email,$type){
+		if($_POST){
+			$dbObj = new Data();
+			$result = $dbObj->retrive_client_details($email,$type);
 			echo json_encode( $result );
 		}// if ends
 		else{

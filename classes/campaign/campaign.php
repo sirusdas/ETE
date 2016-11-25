@@ -1,12 +1,6 @@
 <?php
 /**
- * campaign class contains all control logic for all required request method.
-* created by Uttam Kumar date 19/06/2016
-* @link http://trickyuk001.test.com/test/
-* @copyright 2016-Swiss Medis Test, Inc.
-* @author uttam kumar <trickyuk001@gmail.com>
-* @package rest-test
-* @version 1.0.0
+ * @Sirus
 */
 class CampaignClass
 {
@@ -22,36 +16,29 @@ class CampaignClass
 	 * @param no parameter
 	 * @return no return
 	 */
-	public function campaign_controller()
+	public function Campaign_Controller()
 	{
 		global  $common, $REQUEST_ARR;
-		switch($_SERVER['REQUEST_METHOD'])
-		{
+		switch($_SERVER['REQUEST_METHOD']){
 			case 'PUT':
-				 
 				break;
-
 			case 'POST':
-				break;
-
+				include_once(CAMPAIGN_CLASS_PATH."/campaign.post.php");
+				//this makes sure the URLS are getting clicked
+				//var_dump($_POST);
+				if($_POST['mode']=='campaign'){//die('mara');
+					$campaignObj = new CampaignGet();
+					$response=$campaignObj -> track_campaign($_POST['campaign_id']);
+					if($response){
+						return $response;
+					}
+					break;
+				}
 			case 'DELETE':
 				break;
-
 			case 'GET':
-				include_once(CAMPAIGN_CLASS_PATH."/campaign.get.php");
-				$campaignObj = new CampaignGet();
-				$campaignObj->campaignList();
-/* 				switch($_GET['action']){
-					case "list" :
-						$campaignObj->campaignList();
-						break;
-					case "detail" :
-						$campaignObj->campaignView();
-						break;
-					default :
-						$common->senderror(500,"this is not a valid action");
-				} */
-		} // EO switch($_SERVER['REQUEST_METHOD'])
-	} //EO public function campaign_controller()
+				break;
+		}//campaign Controller ends
+	}//class ends
 }
 ?>

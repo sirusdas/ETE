@@ -20,7 +20,7 @@ switch($_POST['mode'])
 		include_once(CLASS_PATH."/data.class.php");
 		include_once(CAMPAIGN_CLASS_PATH.'/campaign.php');
 		$jobObj = new CampaignClass();
-		$jobObj->Campaign_controller();
+		$jobObj->Campaign_Controller();
 		break;
 	case "tracker":
 		include_once(CLASS_PATH."/data.class.php");

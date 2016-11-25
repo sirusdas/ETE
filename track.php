@@ -11,7 +11,7 @@ include_once($current_dir.'/lib/common.class.php');
 
 $sendPost = new Common();
 			if($_GET){
-				$_GET['sendMail']=1;//needs to be corrected
+				//$_GET['sendMail']=1;//needs to be corrected
 				//this makes sure the URLS are getting clicked
 				if(!empty($_GET['id']) && !empty($_GET['link'])){
 					$link = $sendPost -> base64_url_decode($_GET['link']);$id = $sendPost -> base64_url_decode($_GET['id']);
@@ -51,10 +51,22 @@ $sendPost = new Common();
 							
 						}
 						else{
-							$common = new Common();
-							$common->senderror(500,"Unable to track any details");
+							if(!empty($_GET['action']) && $_GET['action']=='getall'){
+								//lets get all the details about client
+								$requestType = '';
+								$received_data = array('mode' => 'tracker','action' => 'getall');
+								echo $sendPost -> sendCURL(DEFAULT_URL, $received_data, $requestType);
+							}
+							if(!empty($_GET['mail'])){
+								$email = $_GET['mail'];
+								//lets get all the details about client
+								$requestType = '';
+								$received_data = array('mode' => 'tracker','mail' => $email);
+								echo $sendPost -> sendCURL(DEFAULT_URL, $received_data, $requestType);
+							}
 						}
 
-				}
+				}//else closed
+				
 		}
 	

@@ -41,26 +41,26 @@ $sendPost = new Common();
 $data = array('mode' => 'tracker','type' => 'insert');
 $requestType ='';
 $response= $sendPost ->sendCURL(DEFAULT_URL, $data, $requestType);//will insert a blank row and will return the id for the row.
-var_dump($response);die('mara');
 $res = json_decode($response,true);
-if($res['id']){$track_id = $res['id'];}//the id is recieved after the json decode
+if($res['id']){$track_id = $res['id'];$sendPost -> sendMessage(200,'Row Inserted');}//the id is recieved after the json decode and send a success message
 $mail->Subject = 'Here is the subject';
 $mail->Body    = "<img src = '".DEFAULT_URL."/track.php?id=".$sendPost->base64_url_encode($track_id)." style=width:1px;height:1px;' >
 		         <br>
 				 HAPPY FOLKS..<a href='".DEFAULT_URL."/track.php?id=".$sendPost->base64_url_encode($track_id)."&link=".$sendPost->base64_url_encode($link)."' />
 		 	     ";
 //$mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
-
 if(!$mail->send()) {
-	echo $track_id.'<br>Message could not be sent.';
-	echo 'Mailer Error: ' . $mail->ErrorInfo.'<br>';
+	$msg= 'Message could not be sent because of ';
+	$msg .= $mail->ErrorInfo.'';
+	$sendPost -> senderror(500,$msg);
 	//Attempting to send a CURL request to the REST API
 	$url=DEFAULT_URL;
 	$data=array('mode' => 'tracker','track_id' => $track_id, 'camp_id' => $camp_id, 'email_id' => $client_email_id, 'sendMail' => 0);
 	$sendPost->sendCURL($url, $data);
 	
 } else {
-	echo 'Message has been sent';
+	$msg = 'Message has been sent';
+	$sendPost -> sendMessage(200,$msg);
 	$url=DEFAULT_URL;
 	$requestType= 'POST';
 	$data=array('mode' => 'tracker','track_id' => $track_id, 'camp_id' => $camp_id, 'email_id' => $client_email_id, 'sendMail' => 1);

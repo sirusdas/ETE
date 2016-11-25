@@ -117,19 +117,38 @@ include_once(LIB_PATH."/common.class.php");
 		
 		
 		//will be used to get the details from db and present it in json format
-		public function retrive_client_details(){
+		public function retrive_client_details($para,$type){
 			$data = array();
 			$result =array();
-				$sql = "SELECT * FROM `tracker`;";
-				$data = mysqli_query($this->dblink,$sql);
-		
-				if (mysqli_num_rows($data) > 0) {
-					// output data of each row
-					while($row = mysqli_fetch_assoc($data)) {
-						$result[]= ["id" => $row["id"], "Campaign ID" => $row["camp_id"], "Email ID" => $row["email_id"], "Mail Delivered" => $row["mail_delivered"], "Created Date" => $row["created_date"], "Country" => $row["country"], "State" => $row["state"], "City" => $row["city"], "Device" => $row["device"], "IP" => $row["ip"], "Browser" => $row["browser"], "OS" => $row["os"]];
-		
+			
+			switch ($type){
+				case 'mail':
+					$sql = "SELECT tracker.* , url_tracked.url_clicked, url_tracked.url_count FROM url_tracked INNER JOIN tracker ON tracker.id = url_tracked.track_id WHERE tracker.email_id ='".$para."'";
+					$data = mysqli_query($this->dblink,$sql);
+						
+					if (mysqli_num_rows($data) > 0) {
+						// output data of each row
+						while($row = mysqli_fetch_assoc($data)) {
+							$result[]= ['id' => $row['id'], 'Campaign ID' => $row['camp_id'], 'Email ID' => $row['email_id'], 'Mail Delivered' => $row['mail_delivered'], 'Created Date' => $row['created_date'], 'Country' => $row['country'], 'State' => $row['state'], 'City' => $row['city'], 'Device' => $row['device'], 'IP' => $row['ip'], 'Browser' => $row['browser'], 'OS' => $row['os'], 'URL Clicked' => $row['url_clicked'], 'URL Count' => $row['url_count']];
+								
+						}
 					}
-				}
+					break;
+				
+				default:
+					$sql = "SELECT tracker.* , url_tracked.url_clicked, url_tracked.url_count FROM url_tracked INNER JOIN tracker ON tracker.id = url_tracked.track_id ";
+					$data = mysqli_query($this->dblink,$sql);
+					
+					if (mysqli_num_rows($data) > 0) {
+						// output data of each row
+						while($row = mysqli_fetch_assoc($data)) {
+							$result[]= ['id' => $row['id'], 'Campaign ID' => $row['camp_id'], 'Email ID' => $row['email_id'], 'Mail Delivered' => $row['mail_delivered'], 'Created Date' => $row['created_date'], 'Country' => $row['country'], 'State' => $row['state'], 'City' => $row['city'], 'Device' => $row['device'], 'IP' => $row['ip'], 'Browser' => $row['browser'], 'OS' => $row['os'], 'URL Clicked' => $row['url_clicked'], 'URL Count' => $row['url_count']];
+					
+						}
+					}
+					break;
+			}
+			
 			return $result;
 		}
 		

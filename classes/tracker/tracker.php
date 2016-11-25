@@ -20,50 +20,51 @@ class TrackerClass{
 			case 'POST':
 				include_once(TRACKER_CLASS_PATH."/tracker.post.php");
 				//var_dump($_POST);
-				$_POST['sendMail']=1;
+				//$_POST['sendMail']=1;
 				//this makes sure the URLS are getting clicked
-				if($_POST['type']=="insert"){
+				if($_POST['type']=='insert'){
 					$trackerObj = new TrackerGet();
 					$response=$trackerObj -> track_get_latest_track_id();
 					if($response){
 						return $response;
 					}	
 				}
-				if(!empty($_POST['id']) && !empty($_POST['link'])){
-					$link = $_POST['link'];$id = $_POST['id'];
-					$trackerObj = new TrackerGet();
-					$trackData = $trackerObj->track_clicked_link($id, $link);//we need to send atleast email and camp id
-					return $trackData;
-				}
 				else{
-					//this will update the initial client details
-					if(!empty($_POST['track_id']) && !empty($_POST['camp_id']) && !empty($_POST['email_id']) && !empty($_POST['sendMail'])){
-						$camp_id = $_POST['camp_id']; $email_id= $_POST['email_id']; $sendMail= $_POST['sendMail']; $tack_id= $_POST['track_id'];
+					if(!empty($_POST['id']) && !empty($_POST['link'])){
+						$link = $_POST['link'];$id = $_POST['id'];
 						$trackerObj = new TrackerGet();
-						$trackData = $trackerObj->track_update_client_details($track_id, $camp_id, $email_id, $sendMail);
+						$trackData = $trackerObj->track_clicked_link($id, $link);
 						return $trackData;
 					}
 					else{
-							//this is to update the user info when an image is loaded
-							if(!empty($_POST['id'] && $_POST['computer_info'] && $_POST['browser_info'])){
-								$id = $_POST['id'];$computer_info = $_POST['computer_info'];$browser_info = $_POST['browser_info'];
-								$trackerObj = new TrackerGet();
-								$trackData = $trackerObj->track_user_info($id,$computer_info,$browser_info);
-								return $trackData;
-							}
-							else{
-								//save the device info into db
-								$trackerObj = new TrackerGet();
-								switch($_POST['action']){
-									case "getall" : //get all the data from db using json
-										$trackData = $trackerObj->trackGetAll();
-										return $trackData;
-										break;
-									default :
-										$common = new Common();
-										$common->senderror(500,"this is not a valid action");
+						//this will update the initial client details
+						if(!empty($_POST['track_id']) && !empty($_POST['camp_id']) && !empty($_POST['email_id'])){
+							$camp_id = $_POST['camp_id']; $email_id= $_POST['email_id']; $sendMail= 0; $tack_id= $_POST['track_id'];
+							$trackerObj = new TrackerGet();
+							$trackData = $trackerObj->track_update_client_details($track_id, $camp_id, $email_id, $sendMail);
+							return $trackData;
+						}
+						else{
+								//this is to update the user info when an image is loaded
+								if(!empty($_POST['id'] && $_POST['computer_info'] && $_POST['browser_info'])){
+									$id = $_POST['id'];$computer_info = $_POST['computer_info'];$browser_info = $_POST['browser_info'];
+									$trackerObj = new TrackerGet();
+									$trackData = $trackerObj->track_user_info($id,$computer_info,$browser_info);
+									return $trackData;
 								}
-							}
+								else{
+									$trackerObj = new TrackerGet();
+									if($_POST['action']='getall'){
+											$trackData = $trackerObj->trackByPara('','');
+											return $trackData;
+									}
+									if(!empty($_POST['mail'])){
+											$email = $_POST['mail'];
+											$trackData = $trackerObj->trackByPara($email,'mail');
+											return $trackData;
+									}
+								}
+						}
 					}
 				}
 				break;

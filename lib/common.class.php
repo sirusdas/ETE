@@ -32,7 +32,7 @@ class Common
   
   	$url = $received_url;
   	$data = $received_data;
-  
+    //var_dump($data,$url);
   	//
   	// A very simple PHP example that sends a HTTP POST to a remote site
   	//
@@ -59,14 +59,7 @@ class Common
   		echo $server_output; 
   	} 
   	else {
-  		//return $server_output;
-  		// set the content type
-  		header('Content-Type: application/json');
-  		if(!is_array($server_output)){
-  			$server_output = array($server_output);
-  		}
-  		//echo $this->getMessageJson($response_code, $server_output= '');
-  	 	Common::getMessageJson(200,$server_output);
+  		  return $server_output;
   	}
   }
 
@@ -99,13 +92,13 @@ class Common
    *This is a common function to display a success message.
    */
   
-  public function sendMessage($response_code, $message = ''){
+  public function sendMessage($response_code, $message){
   	// set the content type
   	header('Content-Type: application/json');
   	if(!is_array($message)){
   		$message = array($message);
   	}
-  	echo $this->getMessageJson($response_code, $message= '');
+  	echo $this->getMessageJson($response_code, $message);
   }
  
  /**
@@ -124,8 +117,8 @@ class Common
 	}
 	echo $this->getErrorJson($response_code, $message);
 
-	@ob_flush();
-	exit;
+	//@ob_flush();
+	//exit;
   }//EO public function senderror($error_code, $message = '')
 
    /**
@@ -136,20 +129,20 @@ class Common
 	 * @return string $error_Json as Json String
 	 */ 
   private function getErrorJson($response_code, $messages = array()){
-	$error_json = 'Error Code =>'.$response_code;
+	$error_json = array(['Error Code'=> $response_code]);
 	foreach($messages as $msg){
-		$error_json .= ', Error Message =>'.$msg;
+		array_push($error_json,['Error Message' => $msg]);
 	}
 	return json_encode($error_json);
   }
   
   
   private function getMessageJson($response_code, $messages = array()){
-  	$msg_json = 'Success Code =>'.$response_code;
+  	$msg_json = array(['Success Code'=> $response_code]);
   	foreach($messages as $msg){
-  		$msg_json .= ', Success Message =>'.$msg;
+  		array_push($msg_json,['Success Message' => $msg]);
   	}
-  	return json_encode($msg_json);
+  	return  json_encode($msg_json);
   }
 
 }

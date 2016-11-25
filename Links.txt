@@ -12,3 +12,6 @@ localhost/Email_tracking_engine/?mode=track&id=Mg,,&link=YWJjQGdtYWlsLmNvbQ,,
 
 //get json output
 http://localhost/Email_tracking_engine/?mode=tracker
+
+//get speicific campaign info
+http://localhost/Email_tracking_engine/camp.php?campaign_id=1
