@@ -120,7 +120,13 @@ class Common
 	//@ob_flush();
 	//exit;
   }//EO public function senderror($error_code, $message = '')
-
+/*
+ * This functions will be used Log error and Log data into system file.
+ */
+  public function logerror($data, $message = ''){
+  	error_log($message, 3, "/media/suresh/Worskspace/Sirus/EclipsePhpWorkspace/Email_tracking_engine/tmp/errors.log");
+  	error_log($data, 3, "/media/suresh/Worskspace/Sirus/EclipsePhpWorkspace/Email_tracking_engine/tmp/data.log");
+  }
    /**
 	 * construct errorJson as response to error.
 	 * @access public

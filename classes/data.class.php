@@ -34,7 +34,8 @@ include_once(LIB_PATH."/common.class.php");
 			if(!empty($params)){
 				//with respect to requested campaign id
 				$sql = "SELECT * FROM `campaign` WHERE `id` =".$params;
-				$data = mysqli_query($this->dblink,$sql);
+				if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
+				else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
 				
 				if (mysqli_num_rows($data) > 0) {
 					// output data of each row
@@ -47,7 +48,8 @@ include_once(LIB_PATH."/common.class.php");
 			else{
 				//all the campaign id
 				$sql = "SELECT * FROM `campaign`;";
-				$data = mysqli_query($this->dblink,$sql);
+				if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
+				else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
 				
 				if (mysqli_num_rows($data) > 0) {
 					// output data of each row
@@ -70,7 +72,7 @@ include_once(LIB_PATH."/common.class.php");
 				return "Update Successful";
 			} else {
 				$common = new Common();
-				$common->senderror(500,"Error: " . $sql . "<br>" . mysqli_error($conn));
+				$common->logerror($sql,"Error: " . mysqli_error($conn)); 
 				//return  "Error: " . $sql . "<br>" . mysqli_error($conn);
 			}
 		}
@@ -83,8 +85,7 @@ include_once(LIB_PATH."/common.class.php");
 				if (mysqli_query($this->dblink,$sql)) {
 					return "Inserted a Row Successful";
 				} else {
-					$common = new Common();
-					$common->senderror(500,"Error: " . $sql . "<br>" . mysqli_error($conn));
+					$common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn));
 					//return  "Error: " . $sql . "<br>" . mysqli_error($conn);
 				}
 			}
@@ -93,8 +94,7 @@ include_once(LIB_PATH."/common.class.php");
 				if (mysqli_query($this->dblink,$sql)) {
 					header( "Location:$link" );//should redirect
 				} else {
-					$common = new Common();
-					$common->senderror(500,"Error: " . $sql . "<br>" . mysqli_error($conn));
+					$common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn));
 					//return  "Error: " . $sql . "<br>" . mysqli_error($conn);
 				}
 			}
@@ -105,7 +105,8 @@ include_once(LIB_PATH."/common.class.php");
 		//lets check if the track id and link exist
 		public function getTrackDetails($track_id, $link){
 			$sql = "SELECT * FROM url_tracked where track_id = ".$track_id." AND url_clicked = '".$link."'";
-			$data= mysqli_query($this->dblink, $sql);
+			if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
+			else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
 			
 			if(mysqli_num_rows($data)>0){
 				return true;
@@ -124,20 +125,21 @@ include_once(LIB_PATH."/common.class.php");
 			switch ($type){
 				case 'mail':
 					$sql = "SELECT tracker.* , url_tracked.url_clicked, url_tracked.url_count FROM url_tracked INNER JOIN tracker ON tracker.id = url_tracked.track_id WHERE tracker.email_id ='".$para."'";
-					$data = mysqli_query($this->dblink,$sql);
-						
+					if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
+					else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
+					
 					if (mysqli_num_rows($data) > 0) {
 						// output data of each row
 						while($row = mysqli_fetch_assoc($data)) {
 							$result[]= ['id' => $row['id'], 'Campaign ID' => $row['camp_id'], 'Email ID' => $row['email_id'], 'Mail Delivered' => $row['mail_delivered'], 'Created Date' => $row['created_date'], 'Country' => $row['country'], 'State' => $row['state'], 'City' => $row['city'], 'Device' => $row['device'], 'IP' => $row['ip'], 'Browser' => $row['browser'], 'OS' => $row['os'], 'URL Clicked' => $row['url_clicked'], 'URL Count' => $row['url_count']];
-								
 						}
 					}
 					break;
 				
 				default:
 					$sql = "SELECT tracker.* , url_tracked.url_clicked, url_tracked.url_count FROM url_tracked INNER JOIN tracker ON tracker.id = url_tracked.track_id ";
-					$data = mysqli_query($this->dblink,$sql);
+					if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
+					else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
 					
 					if (mysqli_num_rows($data) > 0) {
 						// output data of each row
@@ -165,8 +167,7 @@ include_once(LIB_PATH."/common.class.php");
 			if (mysqli_query($this->dblink,$sql)) {
 				return "Update Successful";
 			} else {
-				$common = new Common();
-				$common->senderror(500,"Error: " . $sql . "<br>" . mysqli_error($conn));
+				$common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); 
 				//return  "Error: " . $sql . "<br>" . mysqli_error($conn);
 			}
 		}
@@ -181,9 +182,7 @@ include_once(LIB_PATH."/common.class.php");
 				//var_dump($last_id);
 				$result= array("id" => $last_id);
 			} else {
-				$common = new Common();
-				$common->senderror(500,"Error: " . $sql . "<br>" . mysqli_error($conn));
-				//echo "Error: " . $sql . "<br>" . mysqli_error($this->dblink);
+				 $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn));
 			}
 			
 			mysqli_close($this->dblink);

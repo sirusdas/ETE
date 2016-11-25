@@ -15,3 +15,9 @@ http://localhost/Email_tracking_engine/?mode=tracker
 
 //get speicific campaign info
 http://localhost/Email_tracking_engine/camp.php?campaign_id=1
+
+//get all tracked user details and output as json.
+http://localhost/Email_tracking_engine/track.php?action=getall
+
+//get user details using email_id and output as json.
+http://localhost/Email_tracking_engine/track.php?mail=abc@xyz.com
