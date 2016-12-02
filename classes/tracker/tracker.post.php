@@ -12,12 +12,12 @@ public $result='';
 /*
  * Trying to get the latest track id
  */
-	public function track_get_latest_track_id(){
+	public function track_get_latest_track_id($camp_id, $email_id){
 		if($_POST){
 			//echo $details->country.$details->region.$details->city; // city
 			$dbObj = new Data();
-			$result = $dbObj->get_latest_track_id();
-			header('Content-Type: application/json');
+			$result = $dbObj->get_latest_track_id($camp_id, $email_id);
+			//header('Content-Type: application/json');
 			echo json_encode( $result);
 		}// if ends
 		else{
@@ -40,8 +40,10 @@ public $result='';
 		}
 	}
 //this is used to insert a new row of the URL getting cliked
-	public function track_clicked_link($track_id, $link){
+	public function track_clicked_link($track_id, $link, $computer_info, $browser_info){
 		if($_POST){
+			    TrackerGet::track_user_info($track_id, $computer_info, $browser_info);
+			    //var_dump($result);die('mara');
 				$dbObj = new Data();
 				$result = $dbObj->insert_clicked_link($track_id, $link);
 				echo json_encode( $result);

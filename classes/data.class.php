@@ -35,7 +35,7 @@ include_once(LIB_PATH."/common.class.php");
 				//with respect to requested campaign id
 				$sql = "SELECT * FROM `campaign` WHERE `id` =".$params;
 				if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
-				else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
+				else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($this->dblink)); }
 				
 				if (mysqli_num_rows($data) > 0) {
 					// output data of each row
@@ -49,7 +49,7 @@ include_once(LIB_PATH."/common.class.php");
 				//all the campaign id
 				$sql = "SELECT * FROM `campaign`;";
 				if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
-				else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
+				else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($this->dblink)); }
 				
 				if (mysqli_num_rows($data) > 0) {
 					// output data of each row
@@ -65,15 +65,15 @@ include_once(LIB_PATH."/common.class.php");
 		//update contents and needs email id and camp_id and updated date to do so
 		public function update_client_details($track_id,$deviceType,$computer_info,$browser_info,$ip,$country,$region,$city){
 			$date = date('Y-m-d H:i:s');
-			$sql = "UPDATE `tracker` SET  `mail_opened`= 1, `country`='".$country."', `state`='".$region."', `city`='".$city."', `device`='".$deviceType."', `ip`='".$ip."', `browser`='".$browser_info."', `os` = '".$computer_info."',`updated_date` = '".$date."' WHERE  id = ".$track_id.";";
+			$sql = "UPDATE `tracker` SET  `mail_opened`= 1, `country`='".$country."', `state`='".$region."', `city`='".$city."', `device`='".$deviceType."', `ip`='".$ip."', `browser`='".$browser_info."', `os` = '".$computer_info."',`updated_date` = CURRENT_TIMESTAMP WHERE  id = ".$track_id.";";
 				
 			if (mysqli_query($this->dblink,$sql)) {
 				//echo "New record created successfully";
 				return "Update Successful";
 			} else {
 				$common = new Common();
-				$common->logerror($sql,"Error: " . mysqli_error($conn)); 
-				//return  "Error: " . $sql . "<br>" . mysqli_error($conn);
+				$common->logerror($sql,"Error: " . mysqli_error($this->dblink)); 
+				//return  "Error: " . $sql . "<br>" . mysqli_error($this->dblink);
 			}
 		}
 		
@@ -81,21 +81,21 @@ include_once(LIB_PATH."/common.class.php");
 		public function insert_clicked_link($track_id, $link){
 			$track_check = Data::getTrackDetails($track_id, $link);
 			if($track_check == false){
-				$sql = "INSERT INTO `url_tracked` (`id`, `track_id`, `url_clicked`, `url_count`, `created_date`, `updated_date`) VALUES (NULL, '".$track_id."', '".$link."', '1', CURRENT_TIMESTAMP, '');";
+				$sql = "INSERT INTO `url_tracked` (`id`, `track_id`, `url_clicked`, `url_count`, `created_date`, `updated_date`) VALUES (NULL, ".$track_id.", '".$link."', 1, CURRENT_TIMESTAMP, NULL);";
 				if (mysqli_query($this->dblink,$sql)) {
 					return "Inserted a Row Successful";
 				} else {
-					$common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn));
-					//return  "Error: " . $sql . "<br>" . mysqli_error($conn);
+					$common = new Common();$common->logerror($sql,"Error: " . mysqli_error($this->dblink));
+					//return  "Error: " . $sql . "<br>" . mysqli_error($this->dblink);
 				}
 			}
 			else{//we will update the db
-				$sql = "UPDATE `url_tracked` SET `url_count`= url_count + 1 ,`updated_date`= 'CURRENT_TIMESTAMP' WHERE `track_id`=".$track_id."  AND `url_clicked`='".$link."' ;";
+				$sql = "UPDATE `url_tracked` SET `url_count`= url_count + 1 ,`updated_date`= CURRENT_TIMESTAMP WHERE `track_id`=".$track_id."  AND `url_clicked`='".$link."' ;";
 				if (mysqli_query($this->dblink,$sql)) {
 					header( "Location:$link" );//should redirect
 				} else {
-					$common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn));
-					//return  "Error: " . $sql . "<br>" . mysqli_error($conn);
+					$common = new Common();$common->logerror($sql,"Error: " . mysqli_error($this->dblink));
+					//return  "Error: " . $sql . "<br>" . mysqli_error($this->dblink);
 				}
 			}
 		}
@@ -106,7 +106,7 @@ include_once(LIB_PATH."/common.class.php");
 		public function getTrackDetails($track_id, $link){
 			$sql = "SELECT * FROM url_tracked where track_id = ".$track_id." AND url_clicked = '".$link."'";
 			if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
-			else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
+			else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($this->dblink)); }
 			
 			if(mysqli_num_rows($data)>0){
 				return true;
@@ -124,9 +124,10 @@ include_once(LIB_PATH."/common.class.php");
 			
 			switch ($type){
 				case 'mail':
+					//var_dump("ele");
 					$sql = "SELECT tracker.* , url_tracked.url_clicked, url_tracked.url_count FROM url_tracked INNER JOIN tracker ON tracker.id = url_tracked.track_id WHERE tracker.email_id ='".$para."'";
 					if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
-					else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
+					else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($this->dblink)); }
 					
 					if (mysqli_num_rows($data) > 0) {
 						// output data of each row
@@ -139,7 +140,7 @@ include_once(LIB_PATH."/common.class.php");
 				default:
 					$sql = "SELECT tracker.* , url_tracked.url_clicked, url_tracked.url_count FROM url_tracked INNER JOIN tracker ON tracker.id = url_tracked.track_id ";
 					if(mysqli_query($this->dblink,$sql)){ $data = mysqli_query($this->dblink,$sql); }
-					else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); }
+					else{ $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($this->dblink)); }
 					
 					if (mysqli_num_rows($data) > 0) {
 						// output data of each row
@@ -167,22 +168,22 @@ include_once(LIB_PATH."/common.class.php");
 			if (mysqli_query($this->dblink,$sql)) {
 				return "Update Successful";
 			} else {
-				$common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn)); 
-				//return  "Error: " . $sql . "<br>" . mysqli_error($conn);
+				$common = new Common();$common->logerror($sql,"Error: " . mysqli_error($this->dblink)); 
+				//return  "Error: " . $sql . "<br>" . mysqli_error($this->dblink);
 			}
 		}
 		
 		//get latest track_id
-		public function get_latest_track_id(){
-			$sql = "INSERT INTO `tracker` (`id`, `camp_id`, `email_id`, `mail_opened`, `mail_delivered`, `created_date`, `country`, `state`, `city`, `device`, `ip`, `browser`, `os`, `updated_date`) VALUES (NULL, '', '', '', '', CURRENT_TIMESTAMP, '', '', '', '', '', '', '', '')";
+		public function get_latest_track_id($camp_id, $email_id){
+			$sql = "INSERT INTO `tracker` (`id`, `camp_id`, `email_id`, `mail_opened`, `mail_delivered`, `created_date`, `country`, `state`, `city`, `device`, `ip`, `browser`, `os`, `updated_date`) VALUES (NULL,".$camp_id.", '".$email_id."', 0, 0, CURRENT_TIMESTAMP, '', '', '', '', '', '', '', NULL)";
 			//$data = mysqli_query($this->dblink,$sql);
 				
 			if (mysqli_query($this->dblink, $sql)) {
 				$last_id = mysqli_insert_id($this->dblink);
-				//var_dump($last_id);
 				$result= array("id" => $last_id);
 			} else {
-				 $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($conn));
+				 $common = new Common();$common->logerror($sql,"Error: " . mysqli_error($this->dblink));
+				 $result='';
 			}
 			
 			mysqli_close($this->dblink);

@@ -22,18 +22,22 @@ class TrackerClass{
 				//var_dump($_POST);
 				//$_POST['sendMail']=1;
 				//this makes sure the URLS are getting clicked
-				if($_POST['type']=='insert'){
+				if(!empty($_POST['type']) ){
+				    if($_POST['type']=='insert'){
+					$camp_id = $_POST['camp_id'];
+					$email_id = $_POST['email_id'];
 					$trackerObj = new TrackerGet();
-					$response=$trackerObj -> track_get_latest_track_id();
+					$response=$trackerObj -> track_get_latest_track_id($camp_id, $email_id);
 					if($response){
 						return $response;
-					}	
+					}
+                                     }					
 				}
 				else{
 					if(!empty($_POST['id']) && !empty($_POST['link'])){
-						$link = $_POST['link'];$id = $_POST['id'];
+						$link = $_POST['link'];$id = $_POST['id'];$computer_info = $_POST['computer_info'];$browser_info = $_POST['browser_info'];
 						$trackerObj = new TrackerGet();
-						$trackData = $trackerObj->track_clicked_link($id, $link);
+						$trackData = $trackerObj->track_clicked_link($id, $link, $computer_info,$browser_info);
 						return $trackData;
 					}
 					else{
@@ -54,7 +58,7 @@ class TrackerClass{
 								}
 								else{
 									$trackerObj = new TrackerGet();
-									if($_POST['action']='getall'){
+									if($_POST['action']=='getall' && !empty($_POST['action'])){
 											$trackData = $trackerObj->trackByPara('','');
 											return $trackData;
 									}
@@ -72,6 +76,9 @@ class TrackerClass{
 				break;
 			case 'GET':
 				break;
+			default:
+				$sendError= new Common();
+				$sendError -> senderror(404,'Unknown Request');
 		}
 	}
 }

@@ -94,7 +94,7 @@ class Common
   
   public function sendMessage($response_code, $message){
   	// set the content type
-  	header('Content-Type: application/json');
+  	//header('Content-Type: application/json');
   	if(!is_array($message)){
   		$message = array($message);
   	}
@@ -110,7 +110,7 @@ class Common
    public function senderror($response_code, $message = '')
   {
     // set the content type  
-    header('Content-Type: application/json');  
+   // header('Content-Type: application/json');  
 	
 	if(!is_array($message)){
 		$message = array($message);
@@ -124,8 +124,8 @@ class Common
  * This functions will be used Log error and Log data into system file.
  */
   public function logerror($data, $message = ''){
-  	error_log($message, 3, "/media/suresh/Worskspace/Sirus/EclipsePhpWorkspace/Email_tracking_engine/tmp/errors.log");
-  	error_log($data, 3, "/media/suresh/Worskspace/Sirus/EclipsePhpWorkspace/Email_tracking_engine/tmp/data.log");
+  	error_log($message, 3, APP_PATH."/tmp/errors.log");
+  	error_log($data, 3, APP_PATH."/tmp/data.log");
   }
    /**
 	 * construct errorJson as response to error.
@@ -138,6 +138,7 @@ class Common
 	$error_json = array(['Error Code'=> $response_code]);
 	foreach($messages as $msg){
 		array_push($error_json,['Error Message' => $msg]);
+		//$error_json +=['Error Message' => $msg];
 	}
 	return json_encode($error_json);
   }
@@ -147,8 +148,29 @@ class Common
   	$msg_json = array(['Success Code'=> $response_code]);
   	foreach($messages as $msg){
   		array_push($msg_json,['Success Message' => $msg]);
+  		//$msg_json +=['Success Message' => $msg];
   	}
   	return  json_encode($msg_json);
+  }
+  
+  public function getDeviceInfo($data){
+  	if(!empty($data)){
+  		$deviceInfo = explode("(", $data);
+  		//echo $deviceInfo[1]."<br>";
+  		$deviceInfo = explode(")", $deviceInfo[1]);
+  		$computer_info = $deviceInfo[0];
+  		$browser_info = $deviceInfo[1];
+  		//putting everything we got into an array
+  		//$received_data = array('mode' => 'tracker','id' => $id,'computer_info' => $computer_info, 'browser_info' => $browser_info);
+  		$received_data = array('computer_info' => $computer_info, 'browser_info' => $browser_info);
+  		
+  		return $received_data;
+  	}
+  	else{
+  		$common = new Common();
+  		$common->senderror(500,"No Deive info was found");
+  		//echo "No Deive info was found";
+  	}
   }
 
 }

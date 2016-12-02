@@ -4,7 +4,7 @@
  */
 //error handling
 ini_set('display_errors',0);
-error_reporting(E_ALL);
+//error_reporting(E_ALL);
 $current_dir = getcwd();
 
 //including configuration file
